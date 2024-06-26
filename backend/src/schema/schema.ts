@@ -1,16 +1,17 @@
 import prisma from '@/configs/prisma';
+import { s3Client } from '@/configs/s3Client';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import {
   getSignedUrl,
-  S3RequestPresigner,
 } from "@aws-sdk/s3-request-presigner";
 
 export const typeDefs = `#graphql 
     type File {
-      filename: String
-      mimetype: String
-      encoding: String
+      originalFilename: String
+      uuid: String
       metadata: String
+      filepath: String
+      filesize: Float
     }
 
     type Query {
@@ -19,7 +20,7 @@ export const typeDefs = `#graphql
     }
 
     type Mutation {
-      uploadFile(metadata: String!): File
+      createPresignedUrl(originalFilename: String!): String
     }
 `;
 
@@ -36,8 +37,12 @@ export const resolvers = {
   },
 
   Mutation: {
-    uploadFile(_: any, { metadata }: any) {
-      return { metadata };
+    async createPresignedUrl(_: any, { originalFilename }: any) {
+      const fileUuid = crypto.randomUUID()
+      const command = new PutObjectCommand({ Bucket: process.env.AWS_S3_BUCKET, Key: `file/${fileUuid}` });
+      const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 })
+      //TODO save into DB
+      return url;
     }
   }
 };
