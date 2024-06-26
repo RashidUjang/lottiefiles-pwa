@@ -1,5 +1,5 @@
 up-local:
-	docker compose -f docker-compose.local.yml up -d postgres adminer
+	docker compose -f docker-compose.local.yml up -d
 
 up-local-rebuild:
 	docker compose -f docker-compose.local.yml up --build --force-recreate
