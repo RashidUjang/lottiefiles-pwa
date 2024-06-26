@@ -11,6 +11,7 @@ const startApolloServer = async () => {
     resolvers
   });
   await server.start();
+  
   return server;
 };
 
