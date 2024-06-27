@@ -2,7 +2,7 @@ import { MouseEvent, ChangeEvent, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { createPresignedUrl } from "../api/api";
 
-const Upload = () => {
+const FileUpload = () => {
   const [file, setFile] = useState<File | null>();
 
   const { mutate } = useMutation({
@@ -60,4 +60,4 @@ const Upload = () => {
     </div>
   );
 };
-export default Upload;
+export default FileUpload;
