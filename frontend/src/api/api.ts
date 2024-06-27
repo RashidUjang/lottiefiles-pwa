@@ -30,8 +30,8 @@ export const createPresignedUrl = async ({
 };
 
 const getFilesQuery = gql`
-  query GetFiles {
-    getFiles {
+  query GetFiles($searchQuery: String) {
+    getFiles(searchQuery: $searchQuery) {
       originalFilename
       uuid
       metadata
@@ -41,12 +41,14 @@ const getFilesQuery = gql`
   }
 `;
 
-// TODO: Add search query
-export const getFiles = async (): Promise<File[] | undefined> => {
+export const getFiles = async (
+  searchQuery?: string
+): Promise<File[] | undefined> => {
   try {
     const response = await request<GetFilesResponse>(
       import.meta.env.VITE_GRAPHQL_ENDPOINT,
-      getFilesQuery
+      getFilesQuery,
+      { searchQuery }
     );
     return response.getFiles;
   } catch (e) {

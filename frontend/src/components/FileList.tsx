@@ -11,7 +11,7 @@ const FileList = () => {
     data: files,
   } = useQuery({
     queryKey: ["files"],
-    queryFn: getFiles,
+    queryFn: () => getFiles(),
   });
 
   const { mutateAsync } = useMutation({
