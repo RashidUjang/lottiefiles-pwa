@@ -15,7 +15,7 @@ export const typeDefs = `#graphql
     }
 
     type Query {
-        files: [File]
+        getFiles: [File]
         file: File
     }
 
@@ -31,7 +31,7 @@ export const resolvers = {
         where: { id: id }
       });
     },
-    async files() {
+    async getFiles() {
       return await prisma.file.findMany();
     }
   },
@@ -39,9 +39,18 @@ export const resolvers = {
   Mutation: {
     async createPresignedUrl(_: any, { originalFilename }: any) {
       const fileUuid = crypto.randomUUID()
-      const command = new PutObjectCommand({ Bucket: process.env.AWS_S3_BUCKET, Key: `file/${fileUuid}` });
+      const filepath = "file"
+
+      const command = new PutObjectCommand({ Bucket: process.env.AWS_S3_BUCKET, Key: `${filepath}/${fileUuid}` });
       const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 })
-      //TODO save into DB
+
+      await prisma.file.create({
+        data: {
+          originalFilename,
+          uuid: fileUuid,
+          filepath
+        }
+      })
       return url;
     }
   }

@@ -8,8 +8,10 @@ datasource db {
 }
 
 model File {
-  id       Int    @id @default(autoincrement())
-  fileurl  String
-  filename String
-  metadata Json
+  id               Int    @id @default(autoincrement())
+  originalFilename String
+  uuid             String
+  filepath         String
+  filesize         Float?
+  metadata         Json?
 }
