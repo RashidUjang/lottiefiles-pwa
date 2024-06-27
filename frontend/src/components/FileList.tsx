@@ -5,11 +5,7 @@ import { createDownloadPresignedUrl } from "../api/api";
 import { useMutation } from "@tanstack/react-query";
 
 const FileList = () => {
-  const {
-    status,
-    error,
-    data: files,
-  } = useQuery({
+  const { data: files } = useQuery({
     queryKey: ["files"],
     queryFn: () => getFiles(),
   });
@@ -18,14 +14,18 @@ const FileList = () => {
     mutationFn: createDownloadPresignedUrl,
   });
 
-  const handleDownload = async (uuid: string, path: string, originalFilename: string) => {
+  const handleDownload = async (
+    uuid: string,
+    path: string,
+    originalFilename: string
+  ) => {
     const presignedUrl = await mutateAsync({ uuid, path });
 
     const fileResponse = await fetch(presignedUrl.createDownloadPresignedUrl);
     if (!fileResponse.ok) {
       throw new Error("Failed to download file");
     }
-    
+
     const blob = await fileResponse.blob();
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -45,9 +45,17 @@ const FileList = () => {
         files.map((file: File) => {
           return (
             <div>
-              {file.originalFilename}
+              <p className="text-3xl font-bold text-red-700 underline">
+                {file.originalFilename}
+              </p>
               <button
-              onClick={() => handleDownload(file.uuid, file.filepath, file.originalFilename)}
+                onClick={() =>
+                  handleDownload(
+                    file.uuid,
+                    file.filepath,
+                    file.originalFilename
+                  )
+                }
               >
                 Download
               </button>
