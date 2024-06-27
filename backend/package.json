@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "TS_NODE_BASEURL=./dist node --env-file=.env -r tsconfig-paths/register dist/src/index.js",
     "build": "npx tsc",
     "lint": "eslint 'src/**/*.ts'",
     "dev": "ts-node-dev -r tsconfig-paths/register --env-file=.env src/index.ts"
