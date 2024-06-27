@@ -1,6 +1,6 @@
 import prisma from '@/configs/prisma';
 import { s3Client } from '@/configs/s3Client';
-import { PutObjectCommand } from '@aws-sdk/client-s3';
+import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import {
   getSignedUrl,
 } from "@aws-sdk/s3-request-presigner";
@@ -21,6 +21,10 @@ export const typeDefs = `#graphql
 
     type Mutation {
       createPresignedUrl(originalFilename: String!): String
+    }
+
+    type Mutation {
+      createDownloadPresignedUrl(uuid: String!, path: String!): String
     }
 `;
 
@@ -51,6 +55,12 @@ export const resolvers = {
           filepath
         }
       })
+      return url;
+    },
+    async createDownloadPresignedUrl(_: any, { uuid, path }: {uuid: string, path: string}) {
+      const command = new GetObjectCommand({ Bucket: process.env.AWS_S3_BUCKET, Key: `${path}/${uuid}` });
+      const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 })
+
       return url;
     }
   }

@@ -41,7 +41,7 @@ const FileUpload = () => {
     e.preventDefault();
 
     if (file) {
-      mutate(file.name);
+      mutate({originalFilename: file.name});
     }
   };
 
