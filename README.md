@@ -61,7 +61,7 @@ This section represents the understanding of the requirements
 
 Below outlines the architecture of the application.
 
-![Untitled Diagram.drawio (1).png](LottieFiles%20Technical%20Assessment%20afbffebc043a4a73b8d458a6f69cc851/Untitled_Diagram.drawio_(1).png)
+![Untitled_Diagram drawio_(1)](https://github.com/RashidUjang/lottiefiles-pwa/assets/11313829/106a4d36-6e8f-4aa3-9556-68d284441ddd)
 
 **Where do we store the files?**
 
@@ -75,7 +75,6 @@ Below outlines the architecture of the application.
         - Mitigation: Invest in proper coding practices to not introduce accidental complexity, only necessary complexity.
 
 **Should we have a backend?**
-
 - It’s possible to tackle this application without a backend by uploading directly to S3 from the client, but a backend was chosen to give room to expand in the future as scalability is important.
 
 ### Technology choices
