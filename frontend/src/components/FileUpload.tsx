@@ -1,18 +1,33 @@
 import { MouseEvent, ChangeEvent, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPresignedUrl } from "../api/api";
+import { Input } from "./ui/AppInput";
+import { Button } from "./ui/AppButton";
+import { Progress } from "./ui/AppProgress";
+import { useToast } from "../hooks/UseToast";
 
 const FileUpload = () => {
   const [file, setFile] = useState<File | null>();
+  const [progress, setProgress] = useState(15);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: createPresignedUrl,
     onSuccess: async (presignedUrl: any) => {
       try {
+        setProgress(50);
+
         if (file) {
           await uploadFileToS3(file, presignedUrl.createPresignedUrl);
         }
 
+        queryClient.invalidateQueries({ queryKey: ["files"] });
+
+        setProgress(100);
+        toast({
+          description: "File uploaded successfully",
+        });
       } catch (error) {
         console.error("Error uploading file:", error);
       }
@@ -41,7 +56,7 @@ const FileUpload = () => {
     e.preventDefault();
 
     if (file) {
-      mutate({originalFilename: file.name});
+      mutate({ originalFilename: file.name });
     }
   };
 
@@ -54,9 +69,13 @@ const FileUpload = () => {
   };
 
   return (
-    <div>
-      <input type="file" onChange={handleFileChange}></input>
-      <button onClick={handleUpload}>Submit</button>
+    <div className="mb-8">
+      <h3 className="font-bold text-3xl mb-3">Upload</h3>
+      <div className="flex mb-2">
+        <Input type="file" className="mr-2" onChange={handleFileChange} />
+        <Button onClick={handleUpload}>Submit</Button>
+      </div>
+      {isPending && <Progress value={progress} />}
     </div>
   );
 };
