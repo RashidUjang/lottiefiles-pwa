@@ -3,8 +3,12 @@ import { Player, Controls } from "@lottiefiles/react-lottie-player";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createDownloadPresignedUrl, getOneFile } from "../../api/api";
 import { useEffect, useState } from "react";
+import { Button } from "../../components/ui/AppButton";
+import { ArrowLeftIcon } from "@radix-ui/react-icons";
+import { useNavigate } from "react-router-dom";
 
-const AppFileDetail = () => {
+const PageFileDetail = () => {
+  const navigate = useNavigate();
   const [file, setFile] = useState<any>();
   const { uuid } = useParams<{ uuid: string }>();
 
@@ -42,20 +46,20 @@ const AppFileDetail = () => {
 
   return (
     <div>
-      This is the file detail {uuid}
-      <Player
-        autoplay
-        loop
-        src={file}
-        style={{ height: "300px", width: "300px" }}
-      >
-        <Controls
-          visible={true}
-          buttons={["play", "repeat", "frame", "debug"]}
-        />
-      </Player>
+      <Button className="p-3" onClick={() => navigate("/")}>
+        <ArrowLeftIcon />
+      </Button>
+      <h3 className="font-bold text-2xl mb-3 mt-3">{data?.originalFilename}</h3>
+      <div className="border-b">
+        <Player autoplay loop src={file} className="h-60">
+          <Controls
+            visible={true}
+            buttons={["play", "repeat", "frame", "debug"]}
+          />
+        </Player>
+      </div>
     </div>
   );
 };
 
-export default AppFileDetail;
+export default PageFileDetail;
