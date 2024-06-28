@@ -3,6 +3,7 @@ import { getFiles } from "../api/api";
 import File from "../types/File";
 import { createDownloadPresignedUrl } from "../api/api";
 import { useMutation } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 
 const FileList = () => {
   const { data: files } = useQuery({
@@ -45,20 +46,22 @@ const FileList = () => {
         files.map((file: File) => {
           return (
             <div>
-              <p className="text-3xl font-bold text-red-700 underline">
-                {file.originalFilename}
-              </p>
-              <button
-                onClick={() =>
-                  handleDownload(
-                    file.uuid,
-                    file.filepath,
-                    file.originalFilename
-                  )
-                }
-              >
-                Download
-              </button>
+              <Link to={`${file.uuid}`}>
+                <p className="text-3xl font-bold text-red-700 underline">
+                  {file.originalFilename}
+                </p>
+                <button
+                  onClick={() =>
+                    handleDownload(
+                      file.uuid,
+                      file.filepath,
+                      file.originalFilename
+                    )
+                  }
+                >
+                  Download
+                </button>
+              </Link>
             </div>
           );
         })}

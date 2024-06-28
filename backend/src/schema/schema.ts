@@ -14,7 +14,7 @@ export const typeDefs = `#graphql
 
     type Query {
         getFiles(searchQuery: String): [File]
-        getOneFile: File
+        getOneFile(uuid: String): File
     }
 
     type Mutation {
@@ -28,9 +28,9 @@ export const typeDefs = `#graphql
 
 export const resolvers = {
   Query: {
-    async getOneFile(_: any, { id }: { id: number }) {
-      return await prisma.file.findUnique({
-        where: { id: id }
+    async getOneFile(_: any, { uuid }: { uuid: string }) {
+      return await prisma.file.findFirst({
+        where: { uuid }
       });
     },
     async getFiles(_: any, { searchQuery }: { searchQuery: string }) {

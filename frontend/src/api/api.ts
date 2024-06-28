@@ -1,6 +1,7 @@
 import { gql, request } from "graphql-request";
 import GetFilesResponse from "../types/GetFilesResponse";
 import File from "../types/File";
+import GetOneFileResponse from "../types/GetOneFileResponse";
 
 const createPresignedUrlQuery = gql`
   mutation CreatePresignedUrl($originalFilename: String!) {
@@ -78,6 +79,32 @@ export const createDownloadPresignedUrl = async ({
         path,
       }
     );
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+const getOneFileQuery = gql`
+  query GetOneFile($uuid: String!) {
+    getOneFile(uuid: $uuid) {
+      originalFilename
+      uuid
+      metadata
+      filepath
+      filesize
+    }
+  }
+`;
+
+export const getOneFile = async (uuid: string): Promise<File | undefined> => {
+  try {
+    const response = await request<GetOneFileResponse>(
+      import.meta.env.VITE_GRAPHQL_ENDPOINT,
+      getOneFileQuery,
+      { uuid }
+    );
+
+    return response.getOneFile;
   } catch (e) {
     console.error(e);
   }
